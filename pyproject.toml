@@ -1,0 +1,26 @@
+[project]
+name = "flake8-sqlalchemy2"
+version = "0.1.0"
+description = "Add your description here"
+license = "MIT"
+license-files = [ "LICENSE" ]
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+  "sqlalchemy",
+  "sqlalchemy2",
+  "flake8",
+]
+dependencies = [
+  "flake8>=3,!=3.2",
+  "pytest>=9.0.2",
+]
+entry-points."flake8.extension".SA2 = "flake8_sqlalchemy2:Checker"
+[dependency-groups]
+test = [
+  "pytest",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
