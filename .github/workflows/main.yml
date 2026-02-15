@@ -42,14 +42,39 @@ jobs:
     - name: Run tox targets for ${{ matrix.python-version }}
       run: uvx --with tox-uv tox run -f py$(echo ${{ matrix.python-version }} | tr -d .)
 
-  release:
+  publish-to-testpypi:
+    needs: [tests]
+    runs-on: ubuntu-24.04
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/flake8-sqlalchemy2
+
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Build
+        run: uv build
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  publish-to-pypi:
     needs: [tests]
     if: success() && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-24.04
-    environment: release
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/flake8-sqlalchemy2
 
     permissions:
-      contents: read
       id-token: write
 
     steps:

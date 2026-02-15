@@ -78,20 +78,20 @@ class Employee(Base):
     name_length = column_property(func.length(first_name + last_name))
 """
 
+
 def test_version():
     tree = ast.parse(code)
     plugin = Checker(tree)
     assert [f"{line}:{col + 1} {msg}" for line, col, msg, _ in plugin.run()] == [
-        '52:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '53:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '55:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '56:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '62:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '63:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '64:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '66:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '68:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '69:5 SA201 Missing `Mapped` or other ORM container class type annotation',
-        '71:5 SA201 Missing `Mapped` or other ORM container class type annotation',
+        "52:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "53:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "55:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "56:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "62:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "63:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "64:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "66:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "68:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "69:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+        "71:5 SA201 Missing `Mapped` or other ORM container class type annotation",
     ]
-

@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import ast
@@ -6,7 +5,8 @@ from collections.abc import Generator
 from importlib.metadata import version
 from typing import Any
 
-def is_mapped_attribute(func_node):
+
+def is_mapped_attribute(func_node: ast.expr) -> bool:
     """
     Placeholder for the logic that identifies SQLAlchemy
     constructs like `mapped_column()` or `Column()`.
@@ -43,11 +43,7 @@ class Checker:
     }
 
     def run(self) -> Generator[tuple[int, int, str, type[Any]]]:
-        # Stores previously seen map() nodes, to avoid raising C417 on it twice.
-        visited_map_calls: set[ast.Call] = set()
-
         for node in ast.walk(self.tree):
-
             # Check if the statement is an assignment: `targets = value`
             if isinstance(node, ast.Assign):
                 value = node.value

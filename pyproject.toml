@@ -1,26 +1,57 @@
 [project]
 name = "flake8-sqlalchemy2"
 version = "0.1.0"
-description = "Add your description here"
+description = "flake8 plugin for SQLAlchemy 2.0"
 license = "MIT"
 license-files = [ "LICENSE" ]
 readme = "README.md"
-requires-python = ">=3.10"
+authors = [
+  { name="Jannic Beck", email="jannic.warken@gmail.com"}
+]
+classifiers = [
+    "Framework :: Flake8",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
 keywords = [
+  "python",
+  "linting",
   "sqlalchemy",
   "sqlalchemy2",
   "flake8",
 ]
+requires-python = ">=3.10"
 dependencies = [
   "flake8>=3,!=3.2",
-  "pytest>=9.0.2",
 ]
 entry-points."flake8.extension".SA2 = "flake8_sqlalchemy2:Checker"
 [dependency-groups]
-test = [
-  "pytest",
+dev = [
+  "mypy==1.19.1",
+  "ruff==0.14.14",
+  "pytest==9.0.2",
 ]
 
+[project.urls]
+Repository = "https://github.com/kreathon/flake8-sqlalchemy2"
+Issues = "https://github.com/kreathon/flake8-sqlalchemy2/issues"
+
+[tool.coverage.run]
+branch = true
+source = ["flake8_sqlalchemy2"]
+
+[tool.mypy]
+strict = true
+packages = ["src.flake8_sqlalchemy2"]
+
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"

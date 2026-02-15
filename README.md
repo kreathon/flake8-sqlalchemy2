@@ -79,5 +79,4 @@ A: For rules not supported by `ruff`. There is a proposed [merge request](https:
 
 Q: Why not integrate these rules into `flake8-sqlalchemy`?
 
-A: The focus of this package are rules for modern, typed Python. Furthermore, I just wanted to learn something new by building this plugin.
-
+A: The focus of this package are rules for modern, typed SQLAlchemy. Furthermore, I wanted to learn something new.
