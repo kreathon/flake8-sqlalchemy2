@@ -4,7 +4,9 @@ import ast
 
 from src.flake8_sqlalchemy2 import Checker
 
-code = """\
+def test_complex():
+
+    code = """\
 from typing import List
 
 from sqlalchemy import Integer, ForeignKey, String, func
@@ -76,10 +78,8 @@ class Employee(Base):
     last_name = mapped_column(String)
 
     name_length = column_property(func.length(first_name + last_name))
-"""
+    """
 
-
-def test_version():
     tree = ast.parse(code)
     plugin = Checker(tree)
     assert [f"{line}:{col + 1} {msg}" for line, col, msg, _ in plugin.run()] == [
@@ -94,4 +94,27 @@ def test_version():
         "68:5 SA201 Missing `Mapped` or other ORM container class type annotation",
         "69:5 SA201 Missing `Mapped` or other ORM container class type annotation",
         "71:5 SA201 Missing `Mapped` or other ORM container class type annotation",
+    ]
+
+
+def test_import_orm():
+
+    code = """\
+from sqlalchemy import Integer
+from sqlalchemy import orm
+
+class Base(orm.DeclarativeBase):
+    pass
+
+
+class Simple(Base):
+    __tablename__ = "simple"
+
+    id = orm.mapped_column(Integer, primary_key=True)
+"""
+
+    tree = ast.parse(code)
+    plugin = Checker(tree)
+    assert [f"{line}:{col + 1} {msg}" for line, col, msg, _ in plugin.run()] == [
+        "11:5 SA201 Missing `Mapped` or other ORM container class type annotation",
     ]

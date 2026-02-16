@@ -4,16 +4,7 @@ import ast
 from collections.abc import Generator
 from importlib.metadata import version
 from typing import Any
-
-
-def is_mapped_attribute(func_node: ast.expr) -> bool:
-    """
-    Placeholder for the logic that identifies SQLAlchemy
-    constructs like `mapped_column()` or `Column()`.
-    """
-    # Simplified check for demonstration
-    if isinstance(func_node, ast.Name):
-        return func_node.id in {
+MAPPING_NAMES = {
             "association_proxy",
             "column_property",
             "composite",
@@ -22,6 +13,17 @@ def is_mapped_attribute(func_node: ast.expr) -> bool:
             "synonym",
             "mapped_column",
         }
+
+def is_mapped_attribute(func_node: ast.expr) -> bool:
+    """
+    Placeholder for the logic that identifies SQLAlchemy
+    constructs like `mapped_column()` or `Column()`.
+    """
+    # Simplified check for demonstration
+    if isinstance(func_node, ast.Name):
+        return func_node.id in MAPPING_NAMES
+    elif isinstance(func_node, ast.Attribute):
+        return func_node.attr in MAPPING_NAMES
     return False
 
 
