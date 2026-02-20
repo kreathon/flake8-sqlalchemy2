@@ -4,15 +4,17 @@ import ast
 from collections.abc import Generator
 from importlib.metadata import version
 from typing import Any
+
 MAPPING_NAMES = {
-            "association_proxy",
-            "column_property",
-            "composite",
-            "mapped_column",
-            "relationship",
-            "synonym",
-            "mapped_column",
-        }
+    "association_proxy",
+    "column_property",
+    "composite",
+    "mapped_column",
+    "relationship",
+    "synonym",
+    "mapped_column",
+}
+
 
 def is_mapped_attribute(func_node: ast.expr) -> bool:
     """
@@ -42,18 +44,39 @@ class Checker:
 
     messages = {
         "SQLAlchemyMissingMappedTypeAnnotation": "SA201 Missing `Mapped` or other ORM container class type annotation",
+        "SQLAlchemyLegacyCollection": "SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`.",
     }
 
     def run(self) -> Generator[tuple[int, int, str, type[Any]]]:
+        print(self.tree)
         for node in ast.walk(self.tree):
-            # Check if the statement is an assignment: `targets = value`
+            if isinstance(node, ast.AnnAssign):
+                if not isinstance(node.annotation, ast.Subscript):
+                    continue
+
+                subscript = node.annotation
+
+                value = subscript.value
+
+                if (
+                    isinstance(value, ast.Attribute)
+                    and value.attr == "DynamicMapped"
+                    or isinstance(value, ast.Name)
+                    and value.id == "DynamicMapped"
+                ):
+                    yield (
+                        subscript.lineno,
+                        subscript.col_offset,
+                        self.messages["SQLAlchemyLegacyCollection"],
+                        type(self),
+                    )
+
             if isinstance(node, ast.Assign):
                 value = node.value
                 targets = node.targets
 
                 # Check if the value is a function call
                 if isinstance(value, ast.Call):
-                    # helpers::is_mapped_attribute logic
                     if is_mapped_attribute(value.func):
                         # SQLAlchemy doesn't allow multiple targets (e.g., x = y = mapped_column())
                         if len(targets) != 1:

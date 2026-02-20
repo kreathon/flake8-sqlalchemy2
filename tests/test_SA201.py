@@ -4,8 +4,8 @@ import ast
 
 from src.flake8_sqlalchemy2 import Checker
 
-def test_complex():
 
+def test_complex():
     code = """\
 from typing import List
 
@@ -98,7 +98,6 @@ class Employee(Base):
 
 
 def test_import_orm():
-
     code = """\
 from sqlalchemy import Integer
 from sqlalchemy import orm

@@ -69,6 +69,52 @@ m = MyModel()
 reveal_type(m.count)  #  note: Revealed type is "builtins.int"
 ```
 
+### legacy-collection (SA202)
+
+#### What it does
+Checks for existence of `DynamicMapped`.
+
+#### Why is this bad?
+`DynamicMapped` is considered legacy and exposes the legacy query API.
+
+#### Example
+```python
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DynamicMapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import relationship
+
+class Base(DeclarativeBase):
+    pass
+
+
+class MyModel(Base):
+    __tablename__ = "my_model"
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    children: DynamicMapped["Child"] = relationship()
+```
+
+Use instead:
+```python
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import WriteOnlyMapped
+
+class Base(DeclarativeBase):
+  pass
+
+
+class MyModel(Base):
+  __tablename__ = "my_model"
+  id: Mapped[int] = mapped_column(primary_key=True)
+
+  children: WriteOnlyMapped["Child"] = relationship()
+```
+
 ## Note on `ruff`
 
 Q: Why still use `flake8` when there is `ruff`!?

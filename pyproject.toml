@@ -1,6 +1,6 @@
 [project]
 name = "flake8-sqlalchemy2"
-version = "0.1.0"
+version = "0.2.0"
 description = "flake8 plugin for SQLAlchemy 2.0"
 license = "MIT"
 license-files = [ "LICENSE" ]
@@ -50,6 +50,7 @@ source = ["flake8_sqlalchemy2"]
 
 [tool.mypy]
 strict = true
+python_version = "3.10"
 packages = ["src.flake8_sqlalchemy2"]
 
 [build-system]
