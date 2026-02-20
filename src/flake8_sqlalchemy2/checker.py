@@ -48,7 +48,6 @@ class Checker:
     }
 
     def run(self) -> Generator[tuple[int, int, str, type[Any]]]:
-        print(self.tree)
         for node in ast.walk(self.tree):
             if isinstance(node, ast.AnnAssign):
                 if not isinstance(node.annotation, ast.Subscript):
