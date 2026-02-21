@@ -66,7 +66,7 @@ class MyModel(Base):
 
 
 m = MyModel()
-reveal_type(m.count)  #  note: Revealed type is "builtins.int"
+reveal_type(m.count)  # note: Revealed type is "builtins.int"
 ```
 
 ### legacy-collection (SA202)
@@ -109,10 +109,82 @@ class Base(DeclarativeBase):
 
 
 class MyModel(Base):
-  __tablename__ = "my_model"
-  id: Mapped[int] = mapped_column(primary_key=True)
+    __tablename__ = "my_model"
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-  children: WriteOnlyMapped["Child"] = relationship()
+    children: WriteOnlyMapped["Child"] = relationship()
+```
+
+### legacy-relationship (SA203)
+
+#### What it does
+Checks for existence of `relationship` definition with `backref` keyword argument.
+
+#### Why is this bad?
+`backref` is considered legacy. It adds dynamic attributes that type checkers and code completion cannot understand.
+
+#### Example
+```python
+from typing import List
+
+from sqlalchemy import ForeignKey
+
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import relationship
+
+class Base(DeclarativeBase):
+    pass
+
+
+class Parent(Base):
+    __tablename__ = "parent"
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    children: Mapped[List["Child"]] = relationship(backref="parent")
+
+
+class Child(Base):
+    __tablename__ = "child"
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    parent_id: Mapped[int] = mapped_column(ForeignKey("parent.id"))
+
+
+c = Child()
+p = Parent(children=[c])
+c.parent  # error: "Child" has no attribute "parent"; maybe "parent_id"?  [attr-defined]
+```
+
+Use instead:
+```python
+from typing import List
+
+from sqlalchemy import ForeignKey
+
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import relationship
+
+class Base(DeclarativeBase):
+  pass
+
+
+class Parent(Base):
+    __tablename__ = "parent"
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    children: Mapped[List["Child"]] = relationship(back_populates="parent")
+
+
+class Child(Base):
+    __tablename__ = "child"
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    parent_id: Mapped[int] = mapped_column(ForeignKey("parent.id"))
+    parent: Mapped["Parent"] = relationship(back_populates="children")
 ```
 
 ## Note on `ruff`

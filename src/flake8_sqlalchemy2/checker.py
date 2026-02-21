@@ -44,11 +44,29 @@ class Checker:
 
     messages = {
         "SQLAlchemyMissingMappedTypeAnnotation": "SA201 Missing `Mapped` or other ORM container class type annotation",
-        "SQLAlchemyLegacyCollection": "SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`",
+        "SQLAlchemyLegacyCollection": "SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped` instead",
+        "SQLAlchemyLegacyRelationship": "SA203 Use of legacy relationship `backref` consider using `back_populates` instead",
     }
 
     def run(self) -> Generator[tuple[int, int, str, type[Any]]]:
         for node in ast.walk(self.tree):
+            if isinstance(node, ast.Call):
+                if (
+                    isinstance(node.func, ast.Attribute)
+                    and node.func.attr == "relationship"
+                    or isinstance(node.func, ast.Name)
+                    and node.func.id == "relationship"
+                ):
+                    for keyword in node.keywords:
+                        if keyword.arg == "backref":
+                            yield (
+                                keyword.lineno,
+                                keyword.col_offset,
+                                self.messages["SQLAlchemyLegacyRelationship"],
+                                type(self),
+                            )
+                            break
+
             if isinstance(node, ast.AnnAssign):
                 if not isinstance(node.annotation, ast.Subscript):
                     continue
