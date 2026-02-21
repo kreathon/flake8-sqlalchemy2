@@ -39,7 +39,7 @@ class Child(Base):
     tree = ast.parse(code)
     plugin = Checker(tree)
     assert [f"{line}:{col + 1} {msg}" for line, col, msg, _ in plugin.run()] == [
-        "19:15 SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`."
+        "19:15 SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`"
     ]
 
 
@@ -71,5 +71,5 @@ class Child(Base):
     tree = ast.parse(code)
     plugin = Checker(tree)
     assert [f"{line}:{col + 1} {msg}" for line, col, msg, _ in plugin.run()] == [
-        "13:15 SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`."
+        "13:15 SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`"
     ]

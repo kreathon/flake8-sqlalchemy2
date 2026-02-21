@@ -9,3 +9,4 @@ repos:
     hooks:
       - id: ruff-check
         args: [--exit-non-zero-on-fix]
+      - id: ruff-format

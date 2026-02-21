@@ -44,7 +44,7 @@ class Checker:
 
     messages = {
         "SQLAlchemyMissingMappedTypeAnnotation": "SA201 Missing `Mapped` or other ORM container class type annotation",
-        "SQLAlchemyLegacyCollection": "SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`.",
+        "SQLAlchemyLegacyCollection": "SA202 Use of legacy collection `DynamicMapped` consider using `WriteOnlyMapped`",
     }
 
     def run(self) -> Generator[tuple[int, int, str, type[Any]]]:
